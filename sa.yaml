@@ -1,0 +1,8 @@
+[pnbone@retdcbastion loki]$ cat sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: logging-collector
+  namespace: openshift-logging
+
+[pnbone@retdcbastion loki]$
