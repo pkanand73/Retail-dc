@@ -1,0 +1,91 @@
+[pnbone@retdcbastion loki]$ cat clf.yaml
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  filters:
+    - name: labels
+      openshiftLabels:
+        syslog: siem-one-prod
+      type: openshiftLabels
+    - name: rsyslog-server1-labels
+      openshiftLabels:
+        syslog: rsyslog-server1
+      type: openshiftLabels
+  inputs:
+    - application:
+        includes:
+          - namespace: prod
+      name: my-app-logs
+      type: application
+    - application:
+        includes:
+          - namespace: prod
+          - namespace: cug
+      name: my-app-logs-es
+      type: application
+  managementState: Managed
+  outputs:
+    - lokiStack:
+        authentication:
+          token:
+            from: serviceAccount
+        target:
+          name: logging-loki
+          namespace: openshift-logging
+      name: default-lokistack
+      tls:
+        ca:
+          configMapName: openshift-service-ca.crt
+          key: service-ca.crt
+      type: lokiStack
+    - name: siem-one-prod
+      syslog:
+        facility: local0
+        payloadKey: '{.message}'
+        rfc: RFC5424
+        severity: informational
+        url: 'udp://10.192.231.221:514'
+      type: syslog
+    - name: rsyslog-server1
+      syslog:
+        facility: local0
+        payloadKey: '{.message}'
+        rfc: RFC5424
+        severity: informational
+        url: 'udp://10.192.5.239:514'
+      type: syslog
+  pipelines:
+    - inputRefs:
+        - my-app-logs-es
+      name: forward-to-loki
+      outputRefs:
+        - default-lokistack
+    - inputRefs:
+        - application
+        - infrastructure
+        - audit
+      name: infra-logs
+      outputRefs:
+        - default-lokistack
+    - filterRefs:
+        - labels
+      inputRefs:
+        - infrastructure
+        - application
+        - audit
+      name: prod-siem-one
+      outputRefs:
+        - siem-one-prod
+    - filterRefs:
+        - rsyslog-server1-labels
+      inputRefs:
+        - my-app-logs
+      name: prod-rsyslog-server1
+      outputRefs:
+        - rsyslog-server1
+  serviceAccount:
+    name: logging-collector
+[pnbone@retdcbastion loki]$
