@@ -1,0 +1,11 @@
+[pnbone@retdcbastion loki]$ cat uiPlugin.yaml
+kind: UIPlugin
+apiVersion: observability.openshift.io/v1alpha1
+metadata:
+  name: logging
+spec:
+  logging:
+    lokistack:
+      name: logging-loki
+  type: Logging
+[pnbone@retdcbastion loki]$
