@@ -1,0 +1,139 @@
+[pnbone@retdcbastion old]$ cat cl.yaml
+apiVersion: v1
+items:
+- apiVersion: logging.openshift.io/v1
+  kind: ClusterLogging
+  metadata:
+    creationTimestamp: "2023-11-18T10:54:00Z"
+    generation: 12
+    name: instance
+    namespace: openshift-logging
+    resourceVersion: "610752637"
+    uid: 17d74fc1-9729-434f-b39f-909947755c64
+  spec:
+    collection:
+      logs:
+        type: vector
+      type: vector
+    logStore:
+      elasticsearch:
+        nodeCount: 3
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+        redundancyPolicy: SingleRedundancy
+        resources:
+          limits:
+            cpu: 10000m
+            memory: 48Gi
+          requests:
+            cpu: 10000m
+            memory: 48Gi
+        storage:
+          size: 10Ti
+          storageClassName: sc-hitachi-csi
+      retentionPolicy:
+        application:
+          maxAge: 30d
+        audit:
+          maxAge: 30d
+        infra:
+          maxAge: 30d
+      type: elasticsearch
+    managementState: Unmanaged
+    visualization:
+      kibana:
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+        replicas: 1
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+      type: kibana
+  status:
+    collection:
+      logs:
+        fluentdStatus:
+          daemonSet: collector
+          nodes:
+            collector-g7rbm: retdcmaster2.retaildc.mypnbone.in
+            collector-r7fvf: retdcmaster1.retaildc.mypnbone.in
+            collector-w8j48: retdcmaster3.retaildc.mypnbone.in
+          pods:
+            failed: []
+            notReady: []
+            ready:
+            - collector-g7rbm
+            - collector-r7fvf
+            - collector-w8j48
+    conditions:
+    - lastTransitionTime: "2023-11-18T10:54:01Z"
+      status: "False"
+      type: CollectorDeadEnd
+    - lastTransitionTime: "2024-10-03T11:32:08Z"
+      message: spec.collection.logs.* is deprecated in favor of spec.collection.*
+      reason: DeprecatedCollectionLogsSpec
+      status: "True"
+      type: Deprecated
+    - lastTransitionTime: "2025-07-25T19:10:39Z"
+      status: "True"
+      type: Ready
+    curation: {}
+    logStore:
+      elasticsearchStatus:
+      - cluster:
+          activePrimaryShards: 104
+          activeShards: 208
+          initializingShards: 0
+          numDataNodes: 3
+          numNodes: 3
+          pendingTasks: 0
+          relocatingShards: 0
+          status: green
+          unassignedShards: 0
+        clusterName: elasticsearch
+        nodeConditions:
+          elasticsearch-cdm-ffi967ib-1: []
+          elasticsearch-cdm-ffi967ib-2: []
+          elasticsearch-cdm-ffi967ib-3: []
+        nodeCount: 3
+        pods:
+          client:
+            failed: []
+            notReady: []
+            ready:
+            - elasticsearch-cdm-ffi967ib-1-85598974ff-d45t4
+            - elasticsearch-cdm-ffi967ib-2-5bf6d8cb9d-f2fdq
+            - elasticsearch-cdm-ffi967ib-3-58f8c4797-4dr44
+          data:
+            failed: []
+            notReady: []
+            ready:
+            - elasticsearch-cdm-ffi967ib-1-85598974ff-d45t4
+            - elasticsearch-cdm-ffi967ib-2-5bf6d8cb9d-f2fdq
+            - elasticsearch-cdm-ffi967ib-3-58f8c4797-4dr44
+          master:
+            failed: []
+            notReady: []
+            ready:
+            - elasticsearch-cdm-ffi967ib-1-85598974ff-d45t4
+            - elasticsearch-cdm-ffi967ib-2-5bf6d8cb9d-f2fdq
+            - elasticsearch-cdm-ffi967ib-3-58f8c4797-4dr44
+        shardAllocationEnabled: all
+    visualization:
+      kibanaStatus:
+      - deployment: kibana
+        pods:
+          failed: []
+          notReady: []
+          ready:
+          - kibana-6d6fc5466c-45mvz
+        replicaSets:
+        - kibana-6d6fc5466c
+        replicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
+[pnbone@retdcbastion old]$
