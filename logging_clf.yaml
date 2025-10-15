@@ -1,0 +1,75 @@
+[pnbone@retdcbastion old]$ cat clf.yaml
+apiVersion: v1
+items:
+- apiVersion: logging.openshift.io/v1
+  kind: ClusterLogForwarder
+  metadata:
+    annotations:
+      creationTimestamp: "2023-05-15T09:15:31Z"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"logging.openshift.io/v1","kind":"ClusterLogForwarder","metadata":{"annotations":{},"name":"instance","namespace":"openshift-logging"},"spec":{"inputs":[{"application":{"namespaces":["prod"]},"name":"my-app-logs"},{"application":{"namespaces":["cug","prod"]},"name":"my-app-logs-es"}],"outputs":[{"name":"siem-one-prod","syslog":{"facility":"local0","payloadKey":"message","rfc":"RFC5424","severity":"informational"},"type":"syslog","url":"udp://10.192.231.221:514"},{"name":"rsyslog-server1","syslog":{"facility":"local0","payloadKey":"message","rfc":"RFC5424","severity":"informational"},"type":"syslog","url":"udp://10.192.5.237:514"}],"pipelines":[{"inputRefs":["infrastructure","application","audit"],"labels":{"syslog":"siem-one-prod"},"name":"prod-siem-one","outputRefs":["siem-one-prod"]},{"inputRefs":["my-app-logs-es"],"name":"log-prod-es","outputRefs":["default"]},{"inputRefs":["my-app-logs"],"labels":{"syslog":"rsyslog-server1"},"name":"prod-rsyslog-server1","outputRefs":["rsyslog-server1"]}]}}
+    creationTimestamp: "2024-09-21T09:41:49Z"
+    generation: 3
+    name: instance
+    namespace: openshift-logging
+    resourceVersion: "515249460"
+    uid: e7967370-0640-47a9-a08f-c8811397d960
+  spec:
+    inputs:
+    - application:
+        namespaces:
+        - prod
+      name: my-app-logs
+    - application:
+        namespaces:
+        - cug
+        - prod
+      name: my-app-logs-es
+    outputs:
+    - name: siem-one-prod
+      syslog:
+        facility: local0
+        payloadKey: message
+        rfc: RFC5424
+        severity: informational
+      type: syslog
+      url: udp://10.192.231.221:514
+    - name: rsyslog-server1
+      syslog:
+        facility: local0
+        payloadKey: message
+        rfc: RFC5424
+        severity: informational
+      type: syslog
+      url: udp://10.192.5.239:514
+    pipelines:
+    - inputRefs:
+      - infrastructure
+      - application
+      - audit
+      labels:
+        syslog: siem-one-prod
+      name: prod-siem-one
+      outputRefs:
+      - siem-one-prod
+    - inputRefs:
+      - my-app-logs-es
+      name: log-prod-es
+      outputRefs:
+      - default
+    - inputRefs:
+      - my-app-logs
+      labels:
+        syslog: rsyslog-server1
+      name: prod-rsyslog-server1
+      outputRefs:
+      - rsyslog-server1
+  status:
+    conditions:
+    - lastTransitionTime: "2024-10-03T12:24:17Z"
+      status: "True"
+      type: Ready
+kind: List
+metadata:
+  resourceVersion: ""
+[pnbone@retdcbastion old]$
